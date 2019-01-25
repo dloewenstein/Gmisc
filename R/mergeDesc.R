@@ -73,14 +73,16 @@ mergeDesc <- function(..., htmlTable_args = list(css.rgroup = "")){
     if (nrow(tlist[[i]]) > 1){
       rgname <- n
       rgno <- nrow(tlist[[i]])
-      if (tolower(tail(colnames(mx), 1)) == "p-value"){
-        pval <- list(mx[nrow(mx) - nrow(tlist[[i]]) + 1,
-                        ncol(mx)])
-        mx[nrow(mx) - nrow(tlist[[i]]) + 1,
-           ncol(mx)] <- ""
-        names(pval)[1] <- as.character(i)
-        pvals_rgroup <- c(pvals_rgroup,
-                          pval)
+      if (any(tolower(colnames(mx)) == "p-value")){
+          pval_cols <- which(tolower(colnames(mx)) == "p-value")
+          pval <- list(mx[nrow(mx) - nrow(tlist[[i]]) + 1,
+                          pval_cols])
+          names(pval[[1]]) <- pval_cols
+          mx[nrow(mx) - nrow(tlist[[i]]) + 1,
+             pval_cols] <- ""
+          names(pval)[1] <- as.character(i)
+          pvals_rgroup <- c(pvals_rgroup,
+                            pval)
       }
     }else{
       rownames(mx)[NROW(mx)] <- n
